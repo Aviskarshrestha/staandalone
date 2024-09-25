@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
 
-public class HelpPopup{
+public class Game{
 
     //[0,1,2,3,4,5,6,7,8]
     public static String logic(String[] arr){
@@ -40,6 +40,8 @@ public class HelpPopup{
     }
 
     public static void main(String args[]){
+        Player p1=new Player("0");
+        Player p2=new Player("X");
         JFrame frame=new JFrame("New Window");
         frame.setSize(400,400);
         frame.setLayout(new GridLayout(4,3));
@@ -85,10 +87,10 @@ public class HelpPopup{
                         rep[finalI]="0";
                     }
                     turn[0] =!turn[0];
-                    winner[0] =HelpPopup.logic(rep);
+                    winner[0] =Game.logic(rep);
                     if(winner[0] !=""){
 
-                        JOptionPane.showMessageDialog(frame,"The winner is"+winner[0]);
+                        JOptionPane.showMessageDialog(frame,"The winner is "+(p1.isLetter(winner[0])?p1.name:p2.name));
                     }
                 }
             });
@@ -100,6 +102,9 @@ public class HelpPopup{
         frame.add(label);
 
         frame.setVisible(true);
+        //login popup
+
+
 
     }
 }

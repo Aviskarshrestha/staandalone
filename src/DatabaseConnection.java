@@ -1,41 +1,55 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql .Statement;
-public class DatabaseConnection{
-    private static final String URL = "jdbc:mysql://localhost:3306/testdb";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Avishkar@2004";
 
 
-    private static Connection connection;
+public class DatabaseConnection {
     public static void main(String[] args) {
+        String jdbcurl = "jdbc:mysql://localhost:3306/testdb";
+        String dbUser = "root";
+        String dbpassword = "Avishkar@2004";
+        Connection connection = null;
         try {
-            // Open a connection
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Connected to the database!");
+            connection = DriverManager.getConnection(jdbcurl, dbUser, dbpassword);
+            System.out.println("Connection Established");
+            String insertSQL = "insert into user(name,email) values(?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setString(1, "diego");
+            preparedStatement.setString(1, "diego@fifa.com");
 
-            // Example of executing a SQL query
-            String sql = "INSERT INTO users (name, email) VALUES ('John Doe', 'johndoe@example.com')";
-            Statement statement = connection.createStatement();
-            int rowsInserted = statement.executeUpdate(sql);
-
+            int rowsInserted = preparedStatement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("A new user was inserted successfully!");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            // Close the connection
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            String selectSQL = "SELECT * FROM users";
+            PreparedStatement selectStatement = connection.prepareStatement(selectSQL);
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+
+                System.out.println("User ID: " + id + ", Name: " + name + ", Email: " + email);
             }
+
+
+        } catch (Exception e) {
+            System.out.println("An error occurred while connecting to the database.");
+            e.printStackTrace();
+
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
         }
     }
 }
-}
-
